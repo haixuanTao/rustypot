@@ -73,3 +73,26 @@ reg_read_write!(indirect_data_3, 226, u8);
 reg_read_write!(indirect_data_4, 227, u8);
 reg_read_write!(indirect_data_5, 228, u8);
 reg_read_write!(indirect_data_6, 229, u8);
+
+/// Unit conversion for XL-330 motors
+pub mod conv {
+    /// Dynamixel angular position to radians
+    ///
+    /// Works in joint and multi-turn mode
+    pub fn pos_to_radians(pos: u32) -> f64 {
+        (360.0_f64.to_radians() * (pos as f64) / 4096.0) - 180.0_f64.to_radians()
+    }
+    /// Radians to dynamixel angular position
+    ///
+    /// Works in joint and multi-turn mode
+    pub fn radians_to_pos(rads: f64) -> u32 {
+        (4096.0 * (180.0_f64.to_radians() + rads) / 360.0_f64.to_radians()) as u32
+    }
+    /// Dynamixel angular velocity to radians per second
+    ///
+    /// Works in joint and multi-turn mode
+    pub fn abs_speed_to_rad_per_sec(speed: u32) -> f64 {
+        let rpm = speed as f64 * 0.229;
+        rpm * 0.10472
+    }
+}
